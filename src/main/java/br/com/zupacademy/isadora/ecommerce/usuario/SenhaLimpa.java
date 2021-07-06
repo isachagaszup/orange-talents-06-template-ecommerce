@@ -1,4 +1,4 @@
-package br.com.zupacademy.isadora.ecommerce.autor;
+package br.com.zupacademy.isadora.ecommerce.usuario;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 

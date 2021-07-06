@@ -1,4 +1,4 @@
-package br.com.zupacademy.isadora.ecommerce.autor;
+package br.com.zupacademy.isadora.ecommerce.usuario;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
