@@ -28,6 +28,10 @@ public class Usuario implements UserDetails {
     public Usuario() {
     }
 
+    public Usuario(Long id) {
+        this.id = id;
+    }
+
     public Usuario(@NotBlank @Email String login, SenhaLimpa senhaLimpa) {
         this.login = login;
         this.senha = senhaLimpa.hash();
