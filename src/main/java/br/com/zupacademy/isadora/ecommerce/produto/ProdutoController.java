@@ -3,6 +3,8 @@ package br.com.zupacademy.isadora.ecommerce.produto;
 import br.com.zupacademy.isadora.ecommerce.categoria.CategoriaRepository;
 import br.com.zupacademy.isadora.ecommerce.produto.imagem.ImagemRequest;
 import br.com.zupacademy.isadora.ecommerce.produto.imagem.upload.Uploader;
+import br.com.zupacademy.isadora.ecommerce.produto.opiniao.OpiniaoRepository;
+import br.com.zupacademy.isadora.ecommerce.produto.opiniao.OpiniaoRequest;
 import br.com.zupacademy.isadora.ecommerce.usuario.Usuario;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,11 +22,13 @@ public class ProdutoController {
     private CategoriaRepository categoriaRepository;
     private ProdutoRepository produtoRepository;
     private Uploader uploader;
+    private OpiniaoRepository opiniaoRepository;
 
-    public ProdutoController(CategoriaRepository categoriaRepository, ProdutoRepository produtoRepository, Uploader uploader) {
+    public ProdutoController(CategoriaRepository categoriaRepository, ProdutoRepository produtoRepository, Uploader uploader, OpiniaoRepository opiniaoRepository) {
         this.categoriaRepository = categoriaRepository;
         this.produtoRepository = produtoRepository;
         this.uploader = uploader;
+        this.opiniaoRepository = opiniaoRepository;
     }
 
     @PostMapping
@@ -52,5 +56,19 @@ public class ProdutoController {
         produto.addImagens(links);
 
         produto = produtoRepository.save(produto);
+    }
+
+    @PostMapping("/{id}/opinioes")
+    public void cadastraOpiniao(@PathVariable Long id, @RequestBody @Valid OpiniaoRequest opiniaoRequest, @AuthenticationPrincipal Usuario usuario) {
+
+        Optional<Produto> optional = produtoRepository.findById(id);
+
+        if(optional.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Id do produto inválido");
+        }
+
+        Produto produto = optional.get();
+
+        opiniaoRepository.save(opiniaoRequest.toModel(produto, usuario));
     }
 }

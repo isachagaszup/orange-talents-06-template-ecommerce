@@ -4,6 +4,7 @@ import br.com.zupacademy.isadora.ecommerce.categoria.Categoria;
 import br.com.zupacademy.isadora.ecommerce.produto.caracteristica.CaracteristicaProduto;
 import br.com.zupacademy.isadora.ecommerce.produto.caracteristica.CaracteristicaProdutoRequest;
 import br.com.zupacademy.isadora.ecommerce.produto.imagem.ImagemProduto;
+import br.com.zupacademy.isadora.ecommerce.produto.opiniao.Opiniao;
 import br.com.zupacademy.isadora.ecommerce.usuario.Usuario;
 
 import javax.persistence.*;
@@ -35,6 +36,8 @@ public class Produto {
     private Usuario usuario;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "produto", cascade = CascadeType.MERGE)
     private List<ImagemProduto> imagens;
+    @OneToMany(mappedBy = "produto")
+    private List<Opiniao> opinioes;
 
     /**
      * hibernate only
