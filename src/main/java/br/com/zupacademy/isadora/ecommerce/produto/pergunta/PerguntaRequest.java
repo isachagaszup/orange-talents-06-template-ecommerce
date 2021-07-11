@@ -4,6 +4,7 @@ import br.com.zupacademy.isadora.ecommerce.produto.Produto;
 import br.com.zupacademy.isadora.ecommerce.usuario.Usuario;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class PerguntaRequest {
 
@@ -17,7 +18,7 @@ public class PerguntaRequest {
         this.titulo = titulo;
     }
 
-    public Pergunta toModel(Usuario usuario, Produto produto){
+    public Pergunta toModel(@NotNull Usuario usuario, @NotNull Produto produto){
         return new Pergunta(titulo, usuario, produto);
     }
 

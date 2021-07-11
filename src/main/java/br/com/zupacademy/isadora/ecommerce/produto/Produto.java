@@ -5,8 +5,11 @@ import br.com.zupacademy.isadora.ecommerce.produto.caracteristica.Caracteristica
 import br.com.zupacademy.isadora.ecommerce.produto.caracteristica.CaracteristicaProdutoRequest;
 import br.com.zupacademy.isadora.ecommerce.produto.imagem.ImagemProduto;
 import br.com.zupacademy.isadora.ecommerce.produto.opiniao.Opiniao;
+import br.com.zupacademy.isadora.ecommerce.produto.opiniao.Opinioes;
 import br.com.zupacademy.isadora.ecommerce.produto.pergunta.Pergunta;
 import br.com.zupacademy.isadora.ecommerce.usuario.Usuario;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -29,16 +32,20 @@ public class Produto {
     private Integer quantidade;
     private String descricao;
     private LocalDateTime criadoEm = LocalDateTime.now();
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy="produto", cascade= CascadeType.PERSIST)
     private Set<CaracteristicaProduto> caracteristicas = new HashSet<>();
     @ManyToOne
     private Categoria categoria;
     @ManyToOne
     private Usuario usuario;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "produto", cascade = CascadeType.MERGE)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
     private List<ImagemProduto> imagens;
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "produto")
     private List<Opiniao> opinioes;
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "produto")
     private List<Pergunta> perguntas;
 
@@ -63,6 +70,30 @@ public class Produto {
     public void addImagens(Set<String> links) {
         Set<ImagemProduto> collect = links.stream().map(link -> new ImagemProduto(this, link)).collect(Collectors.toSet());
         imagens.addAll(collect);
+    }
+
+    public List<ImagemProduto> getImagens() {
+        return imagens;
+    }
+
+    public BigDecimal getPreco() {
+        return preco;
+    }
+
+    public Set<CaracteristicaProduto> getCaracteristicas() {
+        return caracteristicas;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public Opinioes getOpinioes() {
+        return new Opinioes(this.opinioes);
+    }
+
+    public List<Pergunta> getPerguntas() {
+        return perguntas;
     }
 
     public String getNome() {

@@ -7,6 +7,7 @@ import br.com.zupacademy.isadora.ecommerce.produto.opiniao.OpiniaoRepository;
 import br.com.zupacademy.isadora.ecommerce.produto.opiniao.OpiniaoRequest;
 import br.com.zupacademy.isadora.ecommerce.usuario.Usuario;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -70,5 +71,17 @@ public class ProdutoController {
         Produto produto = optional.get();
 
         opiniaoRepository.save(opiniaoRequest.toModel(produto, usuario));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DetalhesDoProdutoResponse> detalha(@PathVariable Long id) {
+        Optional<Produto> optional = produtoRepository.findById(id);
+
+        if (optional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Id do produto inválido");
+        }
+
+        Produto produto = optional.get();
+        return ResponseEntity.ok(DetalhesDoProdutoResponse.convert(produto));
     }
 }
