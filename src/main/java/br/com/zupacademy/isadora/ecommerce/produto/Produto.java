@@ -5,6 +5,7 @@ import br.com.zupacademy.isadora.ecommerce.produto.caracteristica.Caracteristica
 import br.com.zupacademy.isadora.ecommerce.produto.caracteristica.CaracteristicaProdutoRequest;
 import br.com.zupacademy.isadora.ecommerce.produto.imagem.ImagemProduto;
 import br.com.zupacademy.isadora.ecommerce.produto.opiniao.Opiniao;
+import br.com.zupacademy.isadora.ecommerce.produto.pergunta.Pergunta;
 import br.com.zupacademy.isadora.ecommerce.usuario.Usuario;
 
 import javax.persistence.*;
@@ -38,6 +39,8 @@ public class Produto {
     private List<ImagemProduto> imagens;
     @OneToMany(mappedBy = "produto")
     private List<Opiniao> opinioes;
+    @OneToMany(mappedBy = "produto")
+    private List<Pergunta> perguntas;
 
     /**
      * hibernate only
@@ -60,6 +63,10 @@ public class Produto {
     public void addImagens(Set<String> links) {
         Set<ImagemProduto> collect = links.stream().map(link -> new ImagemProduto(this, link)).collect(Collectors.toSet());
         imagens.addAll(collect);
+    }
+
+    public String getNome() {
+        return nome;
     }
 
     public boolean pertenceAo(Usuario usuarioLogado) {
