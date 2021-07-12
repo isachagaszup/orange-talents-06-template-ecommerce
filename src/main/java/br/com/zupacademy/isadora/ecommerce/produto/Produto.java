@@ -1,6 +1,7 @@
 package br.com.zupacademy.isadora.ecommerce.produto;
 
 import br.com.zupacademy.isadora.ecommerce.categoria.Categoria;
+import br.com.zupacademy.isadora.ecommerce.pedido.Pedido;
 import br.com.zupacademy.isadora.ecommerce.produto.caracteristica.CaracteristicaProduto;
 import br.com.zupacademy.isadora.ecommerce.produto.caracteristica.CaracteristicaProdutoRequest;
 import br.com.zupacademy.isadora.ecommerce.produto.imagem.ImagemProduto;
@@ -10,6 +11,8 @@ import br.com.zupacademy.isadora.ecommerce.produto.pergunta.Pergunta;
 import br.com.zupacademy.isadora.ecommerce.usuario.Usuario;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -48,6 +51,9 @@ public class Produto {
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "produto")
     private List<Pergunta> perguntas;
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "produto")
+    private List<Pedido> pedidos;
 
     /**
      * hibernate only
@@ -70,6 +76,14 @@ public class Produto {
     public void addImagens(Set<String> links) {
         Set<ImagemProduto> collect = links.stream().map(link -> new ImagemProduto(this, link)).collect(Collectors.toSet());
         imagens.addAll(collect);
+    }
+
+    public void abateEstoque(@NotNull @Positive Integer quantidade) {
+        if (this.quantidade > quantidade){
+            this.quantidade -= quantidade;
+            return;
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantidade indisponível!");
     }
 
     public List<ImagemProduto> getImagens() {
@@ -103,5 +117,4 @@ public class Produto {
     public boolean pertenceAo(Usuario usuarioLogado) {
         return usuario.equals(usuarioLogado);
     }
-
 }

@@ -2,7 +2,7 @@ package br.com.zupacademy.isadora.ecommerce.produto.pergunta;
 
 import br.com.zupacademy.isadora.ecommerce.produto.Produto;
 import br.com.zupacademy.isadora.ecommerce.produto.ProdutoRepository;
-import br.com.zupacademy.isadora.ecommerce.produto.pergunta.email.Email;
+import br.com.zupacademy.isadora.ecommerce.email.Email;
 import br.com.zupacademy.isadora.ecommerce.usuario.Usuario;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
