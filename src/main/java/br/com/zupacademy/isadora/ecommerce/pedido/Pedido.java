@@ -1,6 +1,7 @@
 package br.com.zupacademy.isadora.ecommerce.pedido;
 
 import br.com.zupacademy.isadora.ecommerce.produto.Produto;
+import br.com.zupacademy.isadora.ecommerce.transacao.Transacao;
 import br.com.zupacademy.isadora.ecommerce.usuario.Usuario;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -8,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -28,6 +30,8 @@ public class Pedido {
     private StatusCompra status = StatusCompra.INICIADA;
     @Enumerated(value = EnumType.STRING)
     private TipoGatewayPagamento gateway;
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+    private List<Transacao> transacoes;
 
 
     /**
@@ -44,6 +48,8 @@ public class Pedido {
         this.comprador = comprador;
         this.gateway = gateway;
     }
+
+    public Long getId() { return id; }
 
     public Usuario getComprador() {
         return comprador;
@@ -62,6 +68,30 @@ public class Pedido {
     }
 
     public String getRedirectUrl(UriComponentsBuilder uriComponentsBuilder) {
-        return this.gateway.criaPagamento(this, uriComponentsBuilder);
+        return this.gateway.criaUrlRetorno(this, uriComponentsBuilder);
+    }
+
+    public TipoGatewayPagamento getGateway() {
+        return gateway;
+    }
+
+    public boolean adicionaTransacao(Transacao transacao) {
+        if(!processadaComSucesso()){
+            this.transacoes.add(transacao);
+            atualizaStatusCompra(transacao);
+            return true;
+        }
+        return false;
+    }
+
+    public void atualizaStatusCompra(Transacao transacao){
+        if(transacao.comSucesso()){
+            status = StatusCompra.SUCESSO;
+        }else
+            status = StatusCompra.FALHA;
+    }
+
+    public boolean processadaComSucesso(){
+        return status.equals(StatusCompra.SUCESSO);
     }
 }

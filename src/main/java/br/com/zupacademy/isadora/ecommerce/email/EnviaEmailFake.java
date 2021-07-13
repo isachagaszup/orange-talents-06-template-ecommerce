@@ -23,7 +23,7 @@ public class EnviaEmailFake implements Email {
         String usuario = pedido.getComprador().getUsername();
         String produto = pedido.getProduto().getNome();
 
-        System.out.println("Você tem uma nova compra de : " + usuario);
-        System.out.println("Produto: " + produto + " Quantidade: " + pedido.getQuantidade());
+        System.out.println("Você tem uma nova compra de: " + usuario);
+        System.out.println("Produto: " + produto + " - Quantidade: " + pedido.getQuantidade());
     }
 }

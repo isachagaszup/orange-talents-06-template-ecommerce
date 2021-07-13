@@ -31,8 +31,8 @@ public class PedidoController {
     public ResponseEntity<String> cadastraPedido(UriComponentsBuilder uriComponentsBuilder, @RequestBody @Valid PedidoRequest pedidoRequest, @AuthenticationPrincipal Usuario usuario) {
         Pedido pedido = pedidoRequest.toModel(usuario, produtoRepository);
 
-        String uri = pedido.getRedirectUrl(uriComponentsBuilder);
-        pedidoRepository.save(pedido);
+        Pedido storePedido = pedidoRepository.save(pedido);
+        String uri = storePedido.getRedirectUrl(uriComponentsBuilder);
         produtoRepository.save(pedido.getProduto());
 
         email.enviaPedido(pedido);

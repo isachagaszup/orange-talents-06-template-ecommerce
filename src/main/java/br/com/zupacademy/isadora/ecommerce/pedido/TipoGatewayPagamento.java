@@ -3,26 +3,23 @@ package br.com.zupacademy.isadora.ecommerce.pedido;
 import org.springframework.web.util.UriComponentsBuilder;
 
 public enum TipoGatewayPagamento {
-    PAGSEGURO {
-        String criaPagamento(Pedido pedido, UriComponentsBuilder uriComponentsBuilder) {
-            String urlRetornoPagseguro = uriComponentsBuilder
-                    .path("/pagseguro/{id}")
-                    .buildAndExpand(pedido.getUuid()).toString();
 
-            return "pagseguro.com?returnId=" + pedido.getUuid() + "?redirectUrl="
-                    + urlRetornoPagseguro;
-        }
-    },
-    PAYPAL {
-        String criaPagamento (Pedido pedido, UriComponentsBuilder uriComponentsBuilder) {
-            String urlRetornoPayPal = uriComponentsBuilder
-                    .path("/paypal/{id}")
-                    .buildAndExpand(pedido.getUuid()).toString();
+    PAYPAL("paypal.com/", "/pagamentos/compras/{id}/paypal"),
+    PAGSEGURO("pagseguro.com/", "/pagamentos/compras/{id}/pagseguro");
 
-            return "paypal.com?buyerId=" + pedido.getUuid() + "?redirectUrl="
-                    + urlRetornoPayPal;
-        }
-    };
+    private String url;
+    private String retorno;
 
-    abstract String criaPagamento(Pedido pedido, UriComponentsBuilder uriComponentsBuilder);
+    TipoGatewayPagamento(String url, String retorno) {
+        this.url = url;
+        this.retorno = retorno;
+    }
+
+    public String criaUrlRetorno(Pedido pedido, UriComponentsBuilder uriComponentsBuilder){
+        String urlRetorno = uriComponentsBuilder
+                .path(retorno).buildAndExpand(pedido.getId())
+                .toString();
+
+        return url + pedido.getUuid() + "?redirectUrl=" + urlRetorno;
+    }
 }

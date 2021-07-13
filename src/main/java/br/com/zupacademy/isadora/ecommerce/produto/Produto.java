@@ -114,6 +114,10 @@ public class Produto {
         return nome;
     }
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
     public boolean pertenceAo(Usuario usuarioLogado) {
         return usuario.equals(usuarioLogado);
     }
